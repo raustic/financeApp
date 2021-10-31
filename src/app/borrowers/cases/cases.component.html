@@ -1,0 +1,174 @@
+          
+         
+           
+     <div class="mx-3">
+         <h3 class="text-center">Cases and History</h3>
+         <a href="/" class="nav-link">Home</a>
+         <div class="accordion-body">
+            <div style="overflow-x: auto;">
+                <table class="table table-responsive table-reverse">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{this.profile.name}}</td>
+                            <th>Mobile</th>
+                            <td>{{this.profile.mobile}}</td>
+                            <th>Address</th>
+                            <td>{{this.profile.addressLine1}}</td>
+                            <th>Loan</th>
+                            <td>{{this.loan|currency:'INR':'symbol'}}</td>
+                            <th>Paid</th>
+                            
+                            <td>{{this.paid|currency:'INR':'symbol'}}</td>
+                            <th>Balance</th>
+                            
+                            <td>{{this.balance|currency:'INR':'symbol'}}</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                      Case History
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                    <div class="accordion-body" style="overflow-x: auto;">
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Case Id</th>
+                                    <th>Loan Amount</th>
+                                    <th>Return Amount</th>
+                                    <th>Sanctioned Date</th>
+                                    <th>Remark</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of allCases">
+                                    <td>
+                                        {{item.CaseId}}
+                                    </td>
+                                    <td>{{item.amount| currency:'INR':'symbol'}}</td>
+                                    <td>{{item.returnAmt| currency:'INR':'symbol'}}</td>
+                                    <td>{{item.givenDate|date:'mediumDate'}}</td>
+                                    <td>{{item.Remark}}</td>
+                                    <td><a style="cursor: pointer;" (click)="loadDates(item.CaseId,item.amount,item.returnAmt,item.givenDate)">Return Dates</a></td>
+                                </tr>
+                            </tbody>
+                        </table>  
+
+
+                    </div>
+                    <div class="accordion-body" style="overflow-x: auto;">
+                        <table class="table table-responsive table-bordered">
+                            
+                            <thead>
+                                <tr style="background-color: darkorange;">
+                                    
+                                    <th>Loan Amount</th>
+                                  
+                                    <th>{{this.loanAmt| currency:'INR':'symbol'}}</th>
+                                    <th>Return Amt</th>
+                                    
+                                    <th>{{this.returnAmt| currency:'INR':'symbol'}}</th>
+                                    <th>Sanctioned Date</th>
+                                    <th>{{this.sancDate|date:'mediumDate'}}</th>
+                                </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Case Id</th>
+                                    <th>Installment Amount</th>
+                                    <th>Return Date</th>
+                                    <th>Is Paid</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of caseDates;let i=index">
+                                    <td>{{i+1}}.</td>
+                                    <td>
+                                        {{item.CaseId}}
+                                    </td>
+                                    <td>
+                                      <span *ngIf="!IsEditdata">  {{item.returnAmt| currency:'INR':'symbol'}}</span>
+                                      <span *ngIf="IsEditdata"><input type="number" class="form-control" (blur)="listenAmtChange(item.id,'amount',$event,item.CaseId)"  value="{{item.returnAmt}}" placeholder="Enter Amount"/></span>
+                                    </td>
+                                   
+                                    <td>
+                                       <span *ngIf="!IsEditdata">  {{item.ReturnDate|date:'mediumDate'}}</span>
+                                       <span *ngIf="IsEditdata">  <input class="form-control" type="date" value="{{item.ReturnDate}}" (blur)="listendateChange(item.id,'date',$event,item.CaseId)" /></span>
+                                    </td>
+                                    <td>{{item.IsAdminApproved==0?'No':'Yes'}}</td>
+                                    <td>
+                                        <a *ngIf="!IsEditdata" style="cursor: pointer;" (click)="Editdata()">Edit</a>
+                                        <button *ngIf="IsEditdata" (click)="UpdateData()" class="btn btn-sm btn-primary mx-3">Save</button>
+                                        <button *ngIf="IsEditdata" (click)="Editdata()" class="btn btn-sm btn-danger">Cancel</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>  
+
+
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                      New Case
+                    </button>
+                  </h2>
+                  <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                    <div class="accordion-body">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <form [formGroup]="newCase" (ngSubmit)="saveForm()">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Loan Amount</label>
+                                <input type="number" class="form-control" formControlName="amount"  placeholder="Loan Amount">
+                              </div>
+                              <div class="mb-3">
+                                <label for="returnAmt" class="form-label">Return Amount</label>
+                                <input type="number" class="form-control" formControlName="returnAmt" placeholder="Return Amount">
+                              </div>
+                              <div class="mb-3">
+                                <label for="tenure" class="form-label">Tenure</label>
+                                <select class="form-select" formControlName="term" (change)="gettenure($event)">
+                                    <option selected>--Select Tenure--</option>
+                                   <option value="1">1 Day</option>
+                                    <option value="7">7 Days</option>
+                                    <option value="10">10 Days</option>
+                                    <option value="15">15 Days</option>
+                                    <option value="20">20 Days</option>
+                                    <option value="30">30 Days</option>
+                                </select>
+                              </div>
+                              <div class="mb-3">
+                                <label for="mobile" class="form-label">Sanctioned Date</label>
+                                <input type="date" class="form-control" formControlName="givenDate" placeholder="Return Amount">
+                              </div>
+                              
+                              <div class="mb-3">
+                                  <label for="Address">Remark</label>
+                                  <textarea rows="3" class="form-control" formControlName="Remark" placeholder="Remark"></textarea>
+                              </div>
+                              <div class="mb-3">
+                                  <input type="submit" class="btn btn-sm btn-primary"/>
+                                  <input type="reset" class="btn btn-sm btn-info mx-2"/>
+                              </div>
+                
+                            </form>
+                        </div>
+                         </div>
+                  </div>
+                </div>
+               
+              </div>
+     </div>  
+     
+     
