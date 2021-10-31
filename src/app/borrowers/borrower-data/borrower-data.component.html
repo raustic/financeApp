@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6">
+          <table class="table table-responsive">
+              <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Mobile</th>
+                      <th>Address</th>
+                      <th>Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let item of list">
+                    <td>
+                        {{item.name}}
+                    </td>
+                    <td>
+                        {{item.mobile}}
+                    </td>
+                    <td>
+                        {{item.addressLine1}}
+                        </td>
+                        <td><a style="cursor: pointer;" (click)="cases(item.id)" >Cases</a></td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6">
+            <form [formGroup]="form" (ngSubmit)="saveForm()">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" formControlName="name"  placeholder="Name">
+              </div>
+              <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile</label>
+                <input type="text" class="form-control" formControlName="mobile" placeholder="Mobile">
+              </div>
+              <div class="mb-3">
+                  <label for="Address">Address</label>
+                  <textarea rows="3" class="form-control" formControlName="addressLine1" placeholder="Address"></textarea>
+              </div>
+              <div class="mb-3">
+                  <input type="submit" class="btn btn-sm btn-primary"/>
+                  <input type="reset" class="btn btn-sm btn-info mx-2"/>
+              </div>
+
+            </form>
+        </div>
+    </div>
+</div>
